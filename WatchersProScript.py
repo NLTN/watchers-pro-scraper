@@ -3,6 +3,7 @@ import tkinter
 import SeleniumHelper as SH
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -34,6 +35,22 @@ def watcherspro_connect_wallet(driver: webdriver):
             buttons[0].click()
             time.sleep(1)
 
+def scrape_vc_watch_overview(driver: webdriver):
+    driver.implicitly_wait(20)
+    driver.get('https://watchers.pro/#/vcWatch')
+    # time.sleep(5)
+    action = ActionChains(driver)
+    row_elems = driver.find_elements(By.XPATH, '//tr[@data-row-key]')
+    for row in row_elems:
+        cells = row.find_elements(By.XPATH, './/td')
+        # print(f'*************** {cells[1].get_attribute("innerText")} ***************')
+        action.click(cells[2]).perform() # Open Address dialog box
+        time.sleep(1)
+        dialogbox_elem = driver.find_element(By.XPATH, '//div[@role="dialog"]')
+        get_addresses_from_dialogbox(driver, dialogbox_elem)
+        time.sleep(2)
+        action.send_keys(Keys.ESCAPE).perform()
+
 def get_address(driver: webdriver, tk: tkinter.Tk, elem:WebElement):    
     action = ActionChains(driver)
     action.move_to_element(elem).perform()
@@ -53,4 +70,3 @@ def get_addresses_from_dialogbox(driver: webdriver, elem:WebElement):
     
     return []
 
-    

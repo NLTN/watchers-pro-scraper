@@ -15,33 +15,20 @@ opt.add_extension(EXTENSION_PATH)
 
 driver = webdriver.Chrome(options=opt)
 
-# Extensions will load first.
-# time.sleep(10)
+###### MetaMask Login ######
+driver.implicitly_wait(20)
 SH.switch_window(driver, 'MetaMask')
 MS.metamask_login(driver)
 
-# Open the website and login
-SH.switch_window(driver, '') # switch to any tab. I don't care
-driver.get('https://watchers.pro/')
+###### Watchers.pro Login ######
+SH.switch_window(driver, '') # force switch to the 1st tab.
+driver.get('https://watchers.pro/') # Open the website and login
 # time.sleep(5)
 WPS.watcherspro_connect_wallet(driver)
 time.sleep(1)
-SH.switch_window(driver, '')
 
-####### Extract data from VC Watch page
-driver.implicitly_wait(20)
-driver.get('https://watchers.pro/#/vcWatch')
-# time.sleep(5)
-action = ActionChains(driver)
-row_elems = driver.find_elements(By.XPATH, '//tr[@data-row-key]')
-for row in row_elems:
-    cells = row.find_elements(By.XPATH, './/td')
-    # print(f'*************** {cells[1].get_attribute("innerText")} ***************')
-    action.click(cells[2]).perform() # Open Address dialog box
-    time.sleep(1)
-    dialogbox_elem = driver.find_element(By.XPATH, '//div[@role="dialog"]')
-    WPS.get_addresses_from_dialogbox(driver, dialogbox_elem)
-    time.sleep(2)
-    action.send_keys(Keys.ESCAPE).perform()
+####### Extract data from VC Watch page #######
+SH.switch_window(driver, '') # force switch to the 1st tab.
+WPS.scrape_vc_watch_overview(driver)
 
 # time.sleep(300)

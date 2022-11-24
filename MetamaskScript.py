@@ -5,12 +5,14 @@ from selenium.webdriver.common.by import By
 
 def metamask_login(driver: webdriver):
     SH.switch_window(driver, 'MetaMask')
-    if '#unlock' in driver.current_url:
-        metamask_quick_login(driver)
+    buttons = driver.find_elements(By.XPATH, '//button[text()="Get started"]')
+    if '#unlock' in driver.current_url or len(buttons) == 0:
+        unlock(driver)
     else:
-        metamask_full_login(driver)
+        import_wallet(driver)
 
-def metamask_quick_login(driver: webdriver):
+def unlock(driver: webdriver):
+    print("----- Perform Metamask Unlock ----- ")
     inputs = driver.find_elements(By.XPATH, '//input')
     if len(inputs):
         inputs[0].send_keys('Y7E5HQVLJRDnMVb')
@@ -20,7 +22,8 @@ def metamask_quick_login(driver: webdriver):
         time.sleep(1)
         driver.close()
 
-def metamask_full_login(driver: webdriver):
+def import_wallet(driver: webdriver):
+    print("----- Perform Metamask Login ----- ")
     driver.find_element(By.XPATH, '//button[text()="Get started"]').click()
     driver.find_element(By.XPATH, '//button[text()="No thanks"]').click()
     driver.find_element(By.XPATH, '//button[text()="Import wallet"]').click()
@@ -36,5 +39,5 @@ def metamask_full_login(driver: webdriver):
     time.sleep(3)
     driver.find_element(By.XPATH, '//button').click()
     time.sleep(3)
-    print(driver.get_cookies())
+
     driver.close()

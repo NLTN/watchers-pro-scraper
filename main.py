@@ -10,20 +10,18 @@ from selenium.webdriver.common.action_chains import ActionChains
 EXTENSION_PATH = '/Users/nguyen/Library/Application Support/Google/Chrome/Default/Extensions/nkbihfbeogaeaoehlefnkodbefgpgknn/10.22.2_0.crx'
 opt = webdriver.ChromeOptions()
 # opt.headless = True
-# opt.add_argument('user-data-dir=env/userdata_sv')  #For cookies/session
+opt.add_argument('user-data-dir=env/userdata_sv')  #For cookies/session
 opt.add_extension(EXTENSION_PATH)
 
 driver = webdriver.Chrome(options=opt)
 
 ###### MetaMask Login ######
-driver.implicitly_wait(20)
 SH.switch_window(driver, 'MetaMask')
 MS.metamask_login(driver)
 
 ###### Watchers.pro Login ######
 SH.switch_window(driver, '') # force switch to the 1st tab.
 driver.get('https://watchers.pro/') # Open the website and login
-# time.sleep(5)
 WPS.watcherspro_connect_wallet(driver)
 time.sleep(1)
 
